@@ -73,10 +73,11 @@ def getBestL(examples, default):
   myatts.remove('Class')
   total = len(examples)
   mystats = []
+  mylabel = default
 ## the following gets a list of dictionaries with key=label and value = list of difference
 ## in votings number of d-number of r in the order of n, y
   for each in myatts:
-    eachlist = []
+    sig = 0
     eachyr = 0
     eachyd = 0
     eachnr = 0
@@ -91,12 +92,24 @@ def getBestL(examples, default):
         eachnd += 1
       elif example.get(each) == 'n' and example.get('Class') =='republican':
         eachnr += 1
-    eachlist.append((eachnd-eachnr)/(eachnd+eachnr))
-    eachlist.append((eachyd-eachyr)/(eachyd+eachyr))
-    mystats.append({each, eachlist})
+    ysig = math.pow(((eachnd-eachnr)/(eachnd+eachnr)),2)
+    nsig = math.pow(((eachyd-eachyr)/(eachyd+eachyr)),2)
+    sig = ysig+nsig
+    mystats.append({each, sig})
 ##
+  mycandvs = mystats.values()
+  mymax = 0
+  for each in mycandvs:
+    if each > mymax:
+      mymax = each
+  d2 = dict((v,k) for k,v in mystats.iteritems())
+  mylabel = d2.get(mymax)
+  return mylabel
+
+
+
   
-  
+
 
 def prune(node, examples):
   '''
